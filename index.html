@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Dialer Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Top Navigation Header */
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 2rem;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 1.1rem;
+        }
+
+        .logo-icon {
+            color: #10b981;
+            margin-right: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+
+        nav button.active {
+            background-color: #0f9675;
+            color: #ffffff;
+        }
+
+        nav button:hover:not(.active) {
+            background-color: #f1f5f9;
+            color: #334155;
+        }
+
+        .right-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .balance-badge {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            padding: 0.4rem 1rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .btn-funds {
+            background-color: #0f9675;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-funds:hover {
+            background-color: #0a7359;
+        }
+
+        .profile-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        /* Main Workspace Content Area */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        /* Dialer Core Card */
+        .dialer-container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 460px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            border: 1px solid #f1f5f9;
+            padding: 2.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .display-container {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .phone-display {
+            width: 100%;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0f172a;
+            outline: none;
+            letter-spacing: 1px;
+        }
+
+        /* Responsive Keypad Grid */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem 2.5rem;
+            width: 100%;
+            max-width: 320px;
+            margin-bottom: 2rem;
+        }
+
+        .key {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            outline: none;
+            user-select: none;
+            padding: 0.5rem;
+            border-radius: 12px;
+            transition: background-color 0.15s;
+        }
+
+        .key:active {
+            background-color: #f1f5f9;
+        }
+
+        .key-num {
+            font-size: 2.2rem;
+            font-weight: 400;
+            color: #1e293b;
+            line-height: 1;
+        }
+
+        .key-letters {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-top: 0.2rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Action Call Button Area */
+        .action-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .btn-call {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background-color: #e2e8f0;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-call:hover {
+            background-color: #cbd5e1;
+        }
+
+        .btn-call.in-call {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-call svg {
+            width: 26px;
+            height: 26px;
+            fill: #475569;
+            transition: fill 0.2s;
+        }
+
+        .btn-call.in-call svg {
+            fill: white;
+            transform: rotate(135deg);
+        }
+
+        .disclaimer {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-align: center;
+            line-height: 1.4;
+            max-width: 340px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="logo-section">
+            <span class="logo-icon">🌐</span> INTERCALLING_CLONE
+        </div>
+        <nav>
+            <button class="active">📞 Dialer</button>
+            <button>🕒 Call History</button>
+            <button>🔢 Numbers</button>
+            <button>👤 Contacts</button>
+        </nav>
+        <div class="right-menu">
+            <div class="balance-badge" id="balanceDisplay">• $0.00</div>
+            <button class="btn-funds">$ Add funds</button>
+            <div class="profile-icon">👤</div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main>
+        <div class="dialer-container">
+            
+            <!-- Phone Number Interactive Box -->
+            <div class="display-container">
+                <input type="text" class="phone-display" id="phoneDisplay" placeholder="Enter number" readonly>
+            </div>
+
+            <!-- Intercalling Dial Pad Pattern Matrix -->
+            <div class="keypad">
+                <div class="key" onclick="appendNum('1')"><span class="key-num">1</span><span class="key-letters">&nbsp;</span></div>
+                <div class="key" onclick="appendNum('2')"><span class="key-num">2</span><span class="key-letters">ABC</span></div>
+                <div class="key" onclick="appendNum('3')"><span class="key-num">3</span><span class="key-letters">DEF</span></div>
+                
+                <div class="key" onclick="appendNum('4')"><span class="key-num">4</span><span class="key-letters">GHI</span></div>
+                <div class="key" onclick="appendNum('5')"><span class="key-num">5</span><span class="key-letters">JKL</span></div>
+                <div class="key" onclick="appendNum('6')"><span class="key-num">6</span><span class="key-letters">MNO</span></div>
+                
+                <div class="key" onclick="appendNum('7')"><span class="key-num">7</span><span class="key-letters">PQRS</span></div>
+                <div class="key" onclick="appendNum('8')"><span class="key-num">8</span><span class="key-letters">TUV</span></div>
+                <div class="key" onclick="appendNum('9')"><span class="key-num">9</span><span class="key-letters">WXYZ</span></div>
+                
+                <div class="key" onclick="appendNum('*')"><span class="key-num">*</span><span class="key-letters">&nbsp;</span></div>
+                <div class="key" onclick="appendNum('0')"><span class="key-num">0</span><span class="key-letters">+</span></div>
+                <div class="key" onclick="appendNum('#')"><span class="key-num">#</span><span class="key-letters">&nbsp;</span></div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="action-area">
+                <button class="btn-call" id="callBtn" onclick="toggleCall()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M6.62,10.79C8.06,13.62 10.38,15.93 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z" />
+                    </svg>
+                </button>
+                <div class="disclaimer">Calls are billed per minute and deducted from your balance. Voicemail calls are also billed.</div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Logic Engine UI Event Drivers -->
+    <script>
+        const display = document.getElementById('phoneDisplay');
